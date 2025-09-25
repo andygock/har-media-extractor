@@ -1,11 +1,6 @@
-// Simple hash function for uniqueness (djb2)
-function shortHash(str: string): string {
-  let hash = 5381;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) + hash + str.charCodeAt(i);
-  }
-  return Math.abs(hash).toString(36).slice(0, 6);
-}
+import React, { useCallback, useRef, useState } from "react";
+import JSZip from "jszip";
+import styles from "./App.module.css";
 
 type MediaItem = {
   url: string;
@@ -15,9 +10,14 @@ type MediaItem = {
   raw: string;
 };
 
-import React, { useCallback, useRef, useState } from "react";
-import JSZip from "jszip";
-import styles from "./App.module.css";
+// Simple hash function for uniqueness (djb2)
+function shortHash(str: string): string {
+  let hash = 5381;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) + hash + str.charCodeAt(i);
+  }
+  return Math.abs(hash).toString(36).slice(0, 6);
+}
 
 // Supported media types
 const MEDIA_TYPES = [
@@ -66,6 +66,8 @@ function getMediaFromHar(har: any): MediaItem[] {
 function App() {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [error, setError] = useState("");
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<MediaItem | null>(null);
   const dropRef = useRef<HTMLDivElement>(null);
 
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
@@ -127,6 +129,28 @@ function App() {
     URL.revokeObjectURL(a.href);
   }, [media]);
 
+  // Lightbox keyboard navigation handler
+  React.useEffect(() => {
+    if (!lightboxOpen) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setLightboxOpen(false);
+      } else if (
+        (e.key === "ArrowLeft" || e.key === "ArrowRight") &&
+        lightboxImg
+      ) {
+        const idx = media.findIndex((item) => item === lightboxImg);
+        if (e.key === "ArrowLeft" && idx > 0) {
+          setLightboxImg(media[idx - 1]);
+        } else if (e.key === "ArrowRight" && idx < media.length - 1) {
+          setLightboxImg(media[idx + 1]);
+        }
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightboxOpen, lightboxImg, media]);
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>HAR Media Extractor</h1>
@@ -159,11 +183,53 @@ function App() {
                   src={item.url}
                   alt={item.name}
                   className={styles.mediaImg}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setLightboxImg(item);
+                    setLightboxOpen(true);
+                  }}
                 />
                 <div className={styles.mediaName}>{item.name}</div>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && lightboxImg && (
+        <div
+          className={styles.lightboxOverlay}
+          tabIndex={-1}
+          aria-modal="true"
+          role="dialog"
+          onClick={() => setLightboxOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.85)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            cursor: "zoom-out",
+          }}
+        >
+          <img
+            src={lightboxImg.url}
+            alt={lightboxImg.name}
+            style={{
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              boxShadow: "0 4px 32px #0008",
+              background: "#fff",
+              borderRadius: 8,
+            }}
+            onClick={() => setLightboxOpen(false)}
+          />
         </div>
       )}
     </div>
