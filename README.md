@@ -10,6 +10,8 @@ A minimalistic Vite + React + TypeScript app to extract and download all media (
 
 ## Usage
 
+I use [`pnpm`](https://pnpm.io/) for package management for this project, but you may use `npm`, `yarn`, etc instead if you prefer, but commands may differ slightly.
+
 1. Start the dev server:
 
    ```sh
