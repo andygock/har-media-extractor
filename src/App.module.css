@@ -1,8 +1,19 @@
+:root {
+  --primary-color: #0366d6;
+  --secondary-color: #333;
+  --background-color: #f4f4f4;
+  --border-color: #ddd;
+  --font-family: sans-serif;
+  --font-size-small: 12px;
+  --font-size-medium: 14px;
+  --font-size-large: 18px;
+}
+
 .container {
   min-height: 100vh;
   background: #fafbfc;
-  color: #222;
-  font-family: sans-serif;
+  color: var(--secondary-color);
+  font-family: var(--font-family);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,12 +42,12 @@
 }
 
 .dropLabel {
-  font-size: 18px;
+  font-size: var(--font-size-large);
   margin-bottom: 8px;
 }
 
 .dropHint {
-  font-size: 13px;
+  font-size: var(--font-size-medium);
   color: #888;
 }
 
@@ -70,8 +81,8 @@
 .mediaFooter a {
   text-decoration: none;
   margin-right: 2px;
-  font-size: small;
-  color: #333;
+  font-size: var(--font-size-small);
+  color: var(--secondary-color);
 }
 
 .mediaFooter a:hover {
@@ -79,7 +90,7 @@
 }
 
 .downloadBtn {
-  background: #222;
+  background: var(--secondary-color);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -114,7 +125,29 @@
 }
 
 .mediaName {
-  font-size: 12px;
+  font-size: var(--font-size-small);
   color: #555;
   word-break: break-all;
+}
+
+.footer {
+  margin-top: 2rem;
+  margin-right: 16px;
+  position: relative;
+  bottom: auto;
+  left: auto;
+  width: 100%;
+  text-align: right;
+  font-size: var(--font-size-medium);
+  color: var(--secondary-color);
+}
+
+.footer a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.footer a:hover {
+  text-decoration: underline;
 }

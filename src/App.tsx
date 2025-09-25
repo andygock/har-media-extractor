@@ -262,6 +262,15 @@ function App() {
           />
         </div>
       )}
+      <footer className={styles.footer}>
+        <a
+          href="https://github.com/andygock/har-media-extractor"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      </footer>
     </div>
   );
 }
