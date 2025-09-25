@@ -68,10 +68,21 @@ function App() {
   const [error, setError] = useState("");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImg, setLightboxImg] = useState<MediaItem | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const onDragLeave = useCallback(() => {
+    setIsDragOver(false);
+  }, []);
 
   const onDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    setIsDragOver(false);
     setError("");
     setMedia([]);
     const file = e.dataTransfer.files[0];
@@ -96,10 +107,6 @@ function App() {
     } catch (err) {
       setError("Failed to read file.");
     }
-  }, []);
-
-  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
   }, []);
 
   const downloadAll = useCallback(async () => {
@@ -158,7 +165,8 @@ function App() {
         ref={dropRef}
         onDrop={onDrop}
         onDragOver={onDragOver}
-        className={styles.dropArea}
+        onDragLeave={onDragLeave}
+        className={`${styles.dropArea} ${isDragOver ? styles.dragOver : ""}`}
       >
         <div className={styles.dropLabel}>
           Drag & drop a <b>.har</b> file here
