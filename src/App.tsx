@@ -189,7 +189,29 @@ function App() {
                     setLightboxOpen(true);
                   }}
                 />
-                <div className={styles.mediaName}>{item.name}</div>
+                <div className={styles.mediaFooter}>
+                  {/* convert to octet-stream blob to force browser save dialog */}
+                  <a
+                    href={URL.createObjectURL(
+                      new Blob(
+                        [
+                          item.encoding === "base64"
+                            ? Uint8Array.from(atob(item.raw), (c) =>
+                                c.charCodeAt(0)
+                              )
+                            : item.raw,
+                        ],
+                        { type: "application/octet-stream" }
+                      )
+                    )}
+                    download={item.name}
+                    className={styles.downloadLink}
+                    aria-label={`Download ${item.name}`}
+                  >
+                    ⬇️ {item.name}
+                  </a>
+                  {/* <div className={styles.mediaName}></div> */}
+                </div>
               </div>
             ))}
           </div>

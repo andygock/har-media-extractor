@@ -57,6 +57,23 @@
   font-weight: 600;
 }
 
+.mediaFooter {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.mediaFooter a {
+  text-decoration: none;
+  margin-right: 2px;
+  font-size: small;
+  color: #333;
+}
+
+.mediaFooter a:hover {
+  background-color: #eee;
+}
+
 .downloadBtn {
   background: #222;
   color: #fff;
